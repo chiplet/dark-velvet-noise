@@ -41,7 +41,7 @@ s(k) = 2*round(rand(size(m)))-1;
 %
 
 
-
+dsfasdfsdf
 
 
 
