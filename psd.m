@@ -7,7 +7,6 @@ function [] = psd(s,fs)
     pxx = pxx(3:end);
     f = f(3:end);
 
-    figure(1)
     semilogx(f,10*log10(pxx))
     xlabel('Frequency (Hz)')
     ylabel('PSD [dB/Hz]')
