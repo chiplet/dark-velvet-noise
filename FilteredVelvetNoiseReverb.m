@@ -25,7 +25,7 @@ s(k) = 2*round(rand(size(m)))-1;
 % Create dark velvet noise with pulse width
 m = 0:puls-1;
 w_min = 1;
-w_max = round(0.50*Td);
+w_max = round(0.80*Td);
 w = round(rand(size(m))*(w_max-w_min) + w_min);
 k = round(m*Td + rand(size(m)).*(Td-w));
 s_m = 2*round(rand(size(m)))-1;
@@ -49,6 +49,7 @@ plot(dvn_env)
 
 [inSig, ~] = audioread("gunshot_dry.wav");
 gunshot_reverb = [conv(inSig(:,1),dvn_env), conv(inSig(:,2),dvn_env)] ;
+soundsc(gunshot_reverb,fs);
 
 %% 3. Filtered Velvet Noise FVN Reverberation Algorithm
 
@@ -59,11 +60,13 @@ gunshot_reverb = [conv(inSig(:,1),dvn_env), conv(inSig(:,2),dvn_env)] ;
 % Block diagram
 %
 
+inSig = sweeptone(2);
+sweep_reverb = conv(inSig,dvn_env) ;
 
-dsfasdfsdf
+spectrogram2(dvn,fs);
+psd(dvn,fs);
 
-
-
+soundsc(sweep_reverb,fs);
 
 
 

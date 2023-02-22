@@ -1,19 +1,21 @@
 %%%%% ELEC-E5620 Audio Signal Processing Demo Project %%%%%
 %%%%% Filtered Velvet Noise Reverberation Algorithm %%%%%
 clear all; close all; clc;
+addpath('./audio');
 
 %% 1. Velvet noise generation 
 
 fs = 44100;
-Nd = 205;      % Pulse density: pulses/sec
+Nd = 2205;      % Pulse density: pulses/sec
 % fs = 100;
 % Nd = 5;      % Pulse density: pulses/sec
 Td = fs/Nd;     % Avg distance btw impulses, in samples
 sec = 2;        % Velvet noise duration
 samp = fs*sec;  % Num samples
+puls = Nd*sec;   % Num pulses
 
 s = zeros(fs*sec,1);
-m = 0:Nd*sec-1;   % Pulse counter
+m = 0:puls-1;   % Pulse counter
 
 k = round(m*Td + rand(size(m))*(Td-1)); % Impulse positions
 s(k) = 2*round(rand(size(m)))-1;
@@ -21,7 +23,7 @@ s(k) = 2*round(rand(size(m)))-1;
 %% 2. Dark Velvet noise
 
 % Create dark velvet noise with pulse width
-m = 0:(Nd-1)*sec;
+m = 0:puls-1;
 w_min = 1;
 w_max = round(0.50*Td);
 w = round(rand(size(m))*(w_max-w_min) + w_min);
@@ -42,14 +44,12 @@ stem(dvn)
 %% Exponential decay envelope
 
 t60 = 2; % 2 seconds reverberation
-decay_60db = db2mag(-60);
+dvn_env = applyExponentialDecay(t60, dvn, fs);
+plot(dvn_env)
 
-a = decay_60db^(1/t60);
-
-x = (0:t60*fs)/fs;
-plot(a.^x)
-
-
+[inSig, ~] = audioread("gunshot_dry.wav");
+gunshot_reverb = [conv(inSig(:,1),dvn_env), conv(inSig(:,2),dvn_env)] ;
+sound(gunshot_reverb,fs);
 
 %% 3. Filtered Velvet Noise FVN Reverberation Algorithm
 
@@ -60,11 +60,13 @@ plot(a.^x)
 % Block diagram
 %
 
+inSig = sweeptone(2);
+sweep_reverb = conv(inSig,dvn_env) ;
 
-dsfasdfsdf
+spectrogram2(dvn,fs);
+psd(dvn,fs);
 
-
-
+sound(sweep_reverb,fs);
 
 
 

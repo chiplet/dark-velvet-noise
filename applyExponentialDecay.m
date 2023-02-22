@@ -10,7 +10,7 @@ function [x_decay] = applyExponentialDecay(t60, x, fs)
 decay_60db = db2mag(-60);
 
 a = decay_60db^(1/t60);
-t = 0:length(fs,1).'/fs; % time vector
+t = linspace(0,length(x)/fs,length(x)).'; % time vector
 
 exp_env = a.^t;
 x_decay = x.*exp_env;
