@@ -42,35 +42,63 @@ end
 stem(dvn)
 
 %% Time Varying DVN
-clear all; close all; clc;
+clear all; clc;
 addpath('./audio')
 fs = 44100;
 t = 2;
 [param_width, param_dens] = createUserInputPlots(t,2205,500);
-dvnVarying = makeTimeVaryingDVN(param_width,param_dens,fs,t);
+[dvnVarying, dvnVarying_eNorm] = makeTimeVaryingDVN(param_width,param_dens,fs,t);
+% spectrogram2(dvnVarying,fs);  % spectrogram of unnormalized dvn
+spectrogram2(dvnVarying_eNorm,fs);
 
 % Exponential decay on time varying DVN
-dvnVarying_env = applyExponentialDecay(t, dvnVarying, fs);
+dvnVarying_env = applyExponentialDecay(t, dvnVarying_eNorm, fs);
 figure
 plot(dvnVarying_env)
 
+% Convolution with inputs
+%%%%
+%%%% NOTE: Please find sounds with 44100Hz sample rate KIITOS ... or else
+%%%% resample or rewrite code XP
+%%%%
+
 [inSig, ~] = audioread("gunshot_dry.wav");
-gunshot_varyingReverb = [conv(inSig(:,1),dvnVarying_env), conv(inSig(:,2),dvnVarying_env)] ;
-soundsc(gunshot_varyingReverb,fs);
+gunshot_reverb = [conv(inSig(:,1),dvnVarying_env), conv(inSig(:,2),dvnVarying_env)] ;
+soundsc(gunshot_reverb,fs);
+
+[inSig, ~] = audioread("Vocal.wav");
+vocal_reverb = conv(inSig,dvnVarying_env) ;
+soundsc(vocal_reverb,fs);
+
+[inSig, ~] = audioread("guitar_twang.wav");
+guitar_reverb = [conv(inSig(:,1),dvnVarying_env), conv(inSig(:,2),dvnVarying_env)] ;
+soundsc(guitar_reverb,fs);
+
+[inSig, ~] = audioread("tomsdiner.wav");
+startidx = round(fs*33.35);  % we want 0:33-0:39 (trust me)
+endidx = startidx + 6*fs ;
+inSig = inSig(startidx:endidx,:);
+diner_reverb = [conv(inSig(:,1),dvn_in), conv(inSig(:,2),dvn_in)] ;
+
+% -->>> Verneri, can you add volume adjustment? <<<-----
 
 %%%% Exporting DVN and convolved sounds %%%%
-version = "02";
+version = "01";
 audiowrite("audio\dvn_" + version + ".wav",dvnVarying_env,fs);
-audiowrite("audio\dvn_" + version + "_gunshot.wav",gunshot_varyingReverb,fs);
+audiowrite("audio\dvn_" + version + "_gunshot.wav",gunshot_reverb,fs);
+audiowrite("audio\dvn_" + version + "_counting.wav",vocal_reverb,fs);
+audiowrite("audio\dvn_" + version + "_guitar.wav",guitar_reverb,fs);
+audiowrite("audio\dvn_" + version + "_tomsdiner.wav",diner_reverb,fs);
 
-% %% Testing output of above
-% dvn_01 = audioread("dvn_" + version + ".wav");
-% soundsc(dvnVarying_env,fs);
-% tic
-% while toc < t+0.5
-%     % do nothing, wait for first sound to play
-% end
-% soundsc(dvn_01,fs);
+%% If you want to convolve with an old dvn:
+addpath('./audio')
+oldVersion = "0X";
+inputfilename = "XXXXX.wav";
+
+[dvn_in, fs] = audioread("dvn_" + oldVersion + ".wav");
+[inSig, ~] = audioread(inputfilename);
+outSig = [conv(inSig(:,1),dvn_in), conv(inSig(:,2),dvn_in)] ;
+audiowrite("audio\dvn_" + oldVersion + "_" + inputfilename, outSig ,fs);
 
 %% Exponential decay envelope
 

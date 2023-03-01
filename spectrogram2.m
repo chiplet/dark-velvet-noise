@@ -1,7 +1,7 @@
 function [] = spectrogram2(s,fs)
 %SPECTROGRAM2 Plot audio spectrogram
-
-    clf;
+    
+    figure;
     nfft = 2^10;
     noverlap = 2^9;
     nfreq = 2^12;
