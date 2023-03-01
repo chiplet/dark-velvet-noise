@@ -6,6 +6,10 @@ function [] = spectrogram2(s,fs)
     noverlap = 2^9;
     nfreq = 2^12;
     [s,f,t]=spectrogram(s, nfft, noverlap, nfreq, fs, 'yaxis');
+
+    % normalize
+    s = s ./ max(abs(s));
+
     surf(t,f,abs(s),'EdgeColor','none')
     view([0 90])
     axis tight
@@ -18,5 +22,5 @@ function [] = spectrogram2(s,fs)
 
     xlabel('Time [s]','Interpreter','latex')
     colorbar
-    colormap turbo
+    colormap hot
 end
