@@ -118,8 +118,8 @@ while button~=3
     hold off
 
     % get new control points from user input
+    [x0,y0,button] = ginput(1);
     if button~=3
-        [x0,y0,button] = ginput(1);
         xp = [xp, x0];
         yp = [yp, y0];
         [xp,I] = sort(xp);

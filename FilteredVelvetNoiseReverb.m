@@ -58,6 +58,20 @@ plot(dvnVarying_env)
 gunshot_varyingReverb = [conv(inSig(:,1),dvnVarying_env), conv(inSig(:,2),dvnVarying_env)] ;
 soundsc(gunshot_varyingReverb,fs);
 
+%%%% Exporting DVN and convolved sounds %%%%
+version = "02";
+audiowrite("audio\dvn_" + version + ".wav",dvnVarying_env,fs);
+audiowrite("audio\dvn_" + version + "_gunshot.wav",gunshot_varyingReverb,fs);
+
+% %% Testing output of above
+% dvn_01 = audioread("dvn_" + version + ".wav");
+% soundsc(dvnVarying_env,fs);
+% tic
+% while toc < t+0.5
+%     % do nothing, wait for first sound to play
+% end
+% soundsc(dvn_01,fs);
+
 %% Exponential decay envelope
 
 t60 = 2; % 2 seconds reverberation
@@ -67,7 +81,6 @@ plot(dvn_env)
 [inSig, ~] = audioread("gunshot_dry.wav");
 gunshot_reverb = [conv(inSig(:,1),dvn_env), conv(inSig(:,2),dvn_env)] ;
 soundsc(gunshot_reverb,fs);
-
 %% 3. Filtered Velvet Noise FVN Reverberation Algorithm
 
 % FVN reverb algo divides the RIR into short non-overlapping segments and

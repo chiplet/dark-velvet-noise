@@ -66,8 +66,10 @@ nexttile
 stem(dvn,"filled")
 set(gca,"XLim",[0 400])
 set(gca,"YLim",[-1.2 1.2])
+title("First 400 Samples")
 nexttile
 stem(dvn,"filled")
 set(gca,"XLim",[length(dvn)-400 inf])
 set(gca,"YLim",[-1.2 1.2])
+title("Last 400 Samples")
 

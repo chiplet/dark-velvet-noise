@@ -1,11 +1,12 @@
 addpath('./audio');
-frameSize = 256;
+frameSize = 512;
 %frameSize = 2048;
 bufferSize = frameSize;
 
 fileReader = dsp.AudioFileReader('guitar.wav', ...
     'SamplesPerFrame',frameSize);
-fs = fileReader.SampleRate;
+% fs = fileReader.SampleRate;
+[dvn,fs] = audioread("dvn_02.wav");
 
 fileWriter = dsp.AudioFileWriter('guitar-PlaybackRecorded.wav', ...
     'SampleRate',fs);
@@ -21,15 +22,21 @@ reverb = reverberator( ...                  %<--- new lines of code
     'WetDryMix',0.4); 
 
 lastAudioRecorded = [1:frameSize].'*0;
+IR = dvn;
+convolver = BlockConvolver_DSP(frameSize,1,length(IR));
+convolver.setIRs(IR);
+
 %%
 tic
 while toc < 15
 % while ~isDone(fileReader)
-    audioToPlay = reverb(lastAudioRecorded);
+    disp(size(lastAudioRecorded));
+%     audioToPlay = reverb(lastAudioRecorded);
+    reverberated = convolver.process(lastAudioRecorded(:,1));
+    audioToPlay = [reverberated reverberated];
     [audioRecorded,nUnderruns,nOverruns] = aPR(audioToPlay);
 
     lastAudioRecorded = audioRecorded;
-    
     fileWriter(audioRecorded)
     
     if nUnderruns > 0
