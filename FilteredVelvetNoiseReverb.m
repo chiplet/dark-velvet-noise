@@ -41,6 +41,23 @@ end
 
 stem(dvn)
 
+%% Time Varying DVN
+clear all; close all; clc;
+addpath('./audio')
+fs = 44100;
+t = 2;
+[param_width, param_dens] = createUserInputPlots(t,2205,500);
+dvnVarying = makeTimeVaryingDVN(param_width,param_dens,fs,t);
+
+% Exponential decay on time varying DVN
+dvnVarying_env = applyExponentialDecay(t, dvnVarying, fs);
+figure
+plot(dvnVarying_env)
+
+[inSig, ~] = audioread("gunshot_dry.wav");
+gunshot_varyingReverb = [conv(inSig(:,1),dvnVarying_env), conv(inSig(:,2),dvnVarying_env)] ;
+soundsc(gunshot_varyingReverb,fs);
+
 %% Exponential decay envelope
 
 t60 = 2; % 2 seconds reverberation
