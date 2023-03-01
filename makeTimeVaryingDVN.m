@@ -17,6 +17,8 @@ TdTime = round(paramDens(1,:)*fs);
 Td = round(fs./paramDens(2,:));    % Avg distance btw impulses, in samples
 Nd = round(paramDens(2,:));        % Pulse Density
 
+
+
 maxPulseWidth = max(Td);
 maxNumPulses = round(max(paramDens(2,:))*t);
 
@@ -43,7 +45,7 @@ while traversed < length(dvn)
 
     w_max = max(round(wp*blocksize),w_min);
     w = round(rand*(w_max-w_min) + w_min); % width of pulse
-
+    wm(m) = w_max;
     s = 2*round(rand)-1;    % sign of pulse
     sNorm = s* 1000/(sqrt(w_max* blockDensity));
 
@@ -65,6 +67,9 @@ while traversed < length(dvn)
     wp = wPercent(i_pWidth);
 end
 dvn_eNorm = dvn_eNorm/max(abs(dvn_eNorm));
+
+figure
+plot(wm)
 
 % Plotting 
 figure

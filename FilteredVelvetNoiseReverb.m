@@ -48,7 +48,7 @@ fs = 44100;
 t = 2;
 [param_width, param_dens] = createUserInputPlots(t,2205,500);
 [dvnVarying, dvnVarying_eNorm] = makeTimeVaryingDVN(param_width,param_dens,fs,t);
-% spectrogram2(dvnVarying,fs);  % spectrogram of unnormalized dvn
+spectrogram2(dvnVarying,fs);  % spectrogram of unnormalized dvn
 spectrogram2(dvnVarying_eNorm,fs);
 
 % Exponential decay on time varying DVN
@@ -78,24 +78,25 @@ soundsc(guitar_reverb,fs);
 startidx = round(fs*33.35);  % we want 0:33-0:39 (trust me)
 endidx = startidx + 6*fs ;
 inSig = inSig(startidx:endidx,:);
-diner_reverb = [conv(inSig(:,1),dvn_in), conv(inSig(:,2),dvn_in)] ;
+diner_reverb = [conv(inSig(:,1),dvnVarying_env), conv(inSig(:,2),dvnVarying_env)] ;
 
 % -->>> Verneri, can you add volume adjustment? <<<-----
 
 %%%% Exporting DVN and convolved sounds %%%%
 version = "01";
-audiowrite("audio\dvn_" + version + ".wav",dvnVarying_env,fs);
-audiowrite("audio\dvn_" + version + "_gunshot.wav",gunshot_reverb,fs);
-audiowrite("audio\dvn_" + version + "_counting.wav",vocal_reverb,fs);
-audiowrite("audio\dvn_" + version + "_guitar.wav",guitar_reverb,fs);
-audiowrite("audio\dvn_" + version + "_tomsdiner.wav",diner_reverb,fs);
+audiowrite("audio\dvn_" + version + ".wav",dvnVarying_eNorm,fs);
+audiowrite("audio\dvn_" + version + "_decay.wav",dvnVarying_env,fs);
+% audiowrite("audio\dvn_" + version + "_gunshot.wav",gunshot_reverb,fs);
+% audiowrite("audio\dvn_" + version + "_counting.wav",vocal_reverb,fs);
+% audiowrite("audio\dvn_" + version + "_guitar.wav",guitar_reverb,fs);
+% audiowrite("audio\dvn_" + version + "_tomsdiner.wav",diner_reverb,fs);
 
 %% If you want to convolve with an old dvn:
 addpath('./audio')
 oldVersion = "0X";
 inputfilename = "XXXXX.wav";
 
-[dvn_in, fs] = audioread("dvn_" + oldVersion + ".wav");
+[dvn_in, fs] = audioread("dvn_" + oldVersion + "_decay.wav");
 [inSig, ~] = audioread(inputfilename);
 outSig = [conv(inSig(:,1),dvn_in), conv(inSig(:,2),dvn_in)] ;
 audiowrite("audio\dvn_" + oldVersion + "_" + inputfilename, outSig ,fs);

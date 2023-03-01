@@ -13,7 +13,7 @@ yp = [Nd_start, Nd_end];
 
 % bezier settings
 n = 2;
-div = 50; 
+div = 200; 
 P = [xw;yw];
 
 figure('Position',[400 200 1000 400])
@@ -89,7 +89,7 @@ hold off
 
 button = 0;
 n = 2;
-div = 50; 
+div = 200; 
 P = [xp;yp];
 while button~=3
     % calculate Bezier curves for current control points
