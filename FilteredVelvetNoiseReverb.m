@@ -63,43 +63,44 @@ plot(dvnVarying_env)
 %%%%
 
 [inSig, ~] = audioread("gunshot_dry.wav");
-gunshot_reverb = [conv(inSig(:,1),dvnVarying_env), conv(inSig(:,2),dvnVarying_env)] ;
-soundsc(gunshot_reverb,fs);
+gunshot_reverb = normalizeLoudness(easyConvolution(dvnVarying_env, inSig),fs);
+% sound(gunshot_reverb,fs);
 
 [inSig, ~] = audioread("Vocal.wav");
-vocal_reverb = conv(inSig,dvnVarying_env) ;
-soundsc(vocal_reverb,fs);
+vocal_reverb = normalizeLoudness(easyConvolution(dvnVarying_env, inSig),fs);
+sound(vocal_reverb,fs);
 
 [inSig, ~] = audioread("guitar_twang.wav");
-guitar_reverb = [conv(inSig(:,1),dvnVarying_env), conv(inSig(:,2),dvnVarying_env)] ;
-soundsc(guitar_reverb,fs);
+guitar_reverb = normalizeLoudness(easyConvolution(dvnVarying_env, inSig),fs);
+sound(guitar_reverb,fs);
 
 [inSig, ~] = audioread("tomsdiner.wav");
 startidx = round(fs*33.35);  % we want 0:33-0:39 (trust me)
 endidx = startidx + 6*fs ;
 inSig = inSig(startidx:endidx,:);
-diner_reverb = [conv(inSig(:,1),dvnVarying_env), conv(inSig(:,2),dvnVarying_env)] ;
+diner_reverb = normalizeLoudness(easyConvolution(dvnVarying_env, inSig),fs);
 
-% -->>> Verneri, can you add volume adjustment? <<<-----
-
+%%
 %%%% Exporting DVN and convolved sounds %%%%
-version = "01";
+version = "05";
 audiowrite("audio\dvn_" + version + ".wav",dvnVarying_eNorm,fs);
 audiowrite("audio\dvn_" + version + "_decay.wav",dvnVarying_env,fs);
-% audiowrite("audio\dvn_" + version + "_gunshot.wav",gunshot_reverb,fs);
-% audiowrite("audio\dvn_" + version + "_counting.wav",vocal_reverb,fs);
-% audiowrite("audio\dvn_" + version + "_guitar.wav",guitar_reverb,fs);
-% audiowrite("audio\dvn_" + version + "_tomsdiner.wav",diner_reverb,fs);
+audiowrite("audio\dvn_" + version + "_gunshot.wav",gunshot_reverb,fs);
+audiowrite("audio\dvn_" + version + "_counting.wav",vocal_reverb,fs);
+audiowrite("audio\dvn_" + version + "_guitar.wav",guitar_reverb,fs);
+audiowrite("audio\dvn_" + version + "_tomsdiner.wav",diner_reverb,fs);
 
 %% If you want to convolve with an old dvn:
 addpath('./audio')
-oldVersion = "0X";
+oldVersion = "01";
 inputfilename = "XXXXX.wav";
 
-[dvn_in, fs] = audioread("dvn_" + oldVersion + "_decay.wav");
-[inSig, ~] = audioread(inputfilename);
-outSig = [conv(inSig(:,1),dvn_in), conv(inSig(:,2),dvn_in)] ;
-audiowrite("audio\dvn_" + oldVersion + "_" + inputfilename, outSig ,fs);
+[dvn_in, fs] = audioread("dvn_" + oldVersion + ".wav");
+spectrogram2(dvn_in,fs)
+
+% [inSig, ~] = audioread(inputfilename);
+% outSig = [conv(inSig(:,1),dvn_in), conv(inSig(:,2),dvn_in)] ;
+% audiowrite("audio\dvn_" + oldVersion + "_" + inputfilename, outSig ,fs);
 
 %% Exponential decay envelope
 

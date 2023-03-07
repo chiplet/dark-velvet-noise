@@ -8,7 +8,7 @@ function [] = spectrogram2(s,fs)
     [s,f,t]=spectrogram(s, nfft, noverlap, nfreq, fs, 'yaxis');
 
     % normalize
-    s = s ./ max(abs(s));
+%     s = s ./ max(abs(s));
 
     surf(t,f,abs(s),'EdgeColor','none')
     view([0 90])
