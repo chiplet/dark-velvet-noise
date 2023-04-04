@@ -13,7 +13,7 @@ yp = [Nd_start, Nd_end];
 
 % bezier settings
 n = 2;
-div = 50; 
+div = 200; 
 P = [xw;yw];
 
 figure('Position',[400 200 1000 400])
@@ -89,7 +89,7 @@ hold off
 
 button = 0;
 n = 2;
-div = 50; 
+div = 200; 
 P = [xp;yp];
 while button~=3
     % calculate Bezier curves for current control points
@@ -118,8 +118,8 @@ while button~=3
     hold off
 
     % get new control points from user input
+    [x0,y0,button] = ginput(1);
     if button~=3
-        [x0,y0,button] = ginput(1);
         xp = [xp, x0];
         yp = [yp, y0];
         [xp,I] = sort(xp);
