@@ -21,6 +21,7 @@ s(k) = 2*round(rand(size(m)))-1;
 
 s_norm = normalizeLoudness(s,fs);
 audiowrite("output/ovn.wav",s_norm,fs);
+figure
 psd(s,fs);
 saveas(gcf,'output/ovn-spectrum.png')
 
@@ -28,8 +29,10 @@ figure
 hold on
 plot_n = 100;
 stem(s(1:plot_n))
-ylim([-2,2])
-xlabel('sample index')
+ylim([-1.25,1.25])
+title("Original Velvet Noise",'Interpreter','latex','FontSize',20)
+xlabel('Sample index $n$','Interpreter','latex','FontSize',18)
+ylabel('Amplitude','Interpreter','latex','FontSize',18)
 xline(0:Td:plot_n)
 saveas(gcf,'output/ovn-stem.png')
 
@@ -60,7 +63,7 @@ for wi = 20:20:80
     figure
     psd(dvn,fs);
     titlestr = sprintf("$$w_{\\max}=%.2f$$",wi/100.0);
-    title(titlestr,'Interpreter','latex','FontSize',16)
+    title(titlestr,'Interpreter','latex','FontSize',20)
     saveas(gcf, specfile)
 
     dvn_norm = normalizeLoudness(dvn,fs);
@@ -73,8 +76,9 @@ for wi = 20:20:80
     plot_n = 100;
     stem(dvn(1:plot_n))
     ylim([-2,2])
-    title(titlestr,'Interpreter','latex','FontSize',16)
-    xlabel('sample index')
+    title(titlestr,'Interpreter','latex','FontSize',20)
+    xlabel('Sample index $n$','Interpreter','latex','FontSize',18)
+    ylabel('Amplitude','Interpreter','latex','FontSize',18)
     xline(0:Td:plot_n)
     saveas(gcf,stemfile)
 end
